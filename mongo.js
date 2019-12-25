@@ -11,7 +11,7 @@ const createProduct = async (req, res, next) => {
     price
   };
 
-  const client = new MongoClient(url);
+  const client = new MongoClient(url, { useUnifiedTopology: true });
 
   try {
     await client.connect();
