@@ -25,7 +25,23 @@ const createProduct = async (req, res, next) => {
   res.json(newProduct);
 };
 
-const getProducts = async (req, res, next) => {};
+const getProducts = async (req, res, next) => {
+  const client = new MongoClient(url, { useUnifiedTopology: true });
+  let products;
+  try {
+    await client.connect();
+    const db = client.db();
+    products = await db
+      .collection('products')
+      .find()
+      .toArray();
+  } catch (error) {
+    return res.json({ message: 'Could not get the products.' });
+  }
+  client.close();
+
+  res.json(products);
+};
 
 exports.getProducts = getProducts;
 exports.createProduct = createProduct;
