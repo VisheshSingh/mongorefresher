@@ -1,11 +1,31 @@
 const MongoClient = require('mongodb').MongoClient;
 
 const url =
-  'mongodb+srv://test-user:test123@cluster0-t0uam.mongodb.net/products?retryWrites=true&w=majority';
+  'mongodb+srv://test-user:test123@cluster0-t0uam.mongodb.net/products_test?retryWrites=true&w=majority';
 
-const getProducts = (req, res, next) => {};
+const createProduct = async (req, res, next) => {
+  const { name, price } = req.body;
 
-const createProduct = (req, res, next) => {};
+  const newProduct = {
+    name,
+    price
+  };
+
+  const client = new MongoClient(url);
+
+  try {
+    await client.connect();
+    const db = client.db();
+    const result = db.collection('products').insertOne(newProduct);
+  } catch (error) {
+    return res.json({ message: 'Could not save the data.' });
+  }
+  client.close();
+
+  res.json(newProduct);
+};
+
+const getProducts = async (req, res, next) => {};
 
 exports.getProducts = getProducts;
 exports.createProduct = createProduct;
